@@ -1,0 +1,18 @@
+# pnpm build-script approval (pnpm >= 10).
+# By default pnpm does NOT run install/postinstall scripts of dependencies —
+# a supply-chain hardening default. We explicitly opt IN only the packages that
+# legitimately need to compile/download native artifacts, and explicitly opt OUT
+# of the rest so `pnpm install` is deterministic and never blocks on approval.
+onlyBuiltDependencies:
+  - "@prisma/engines" # Prisma query/schema engine binaries
+  - prisma # Prisma CLI postinstall
+  - bcrypt # native node-gyp build for password hashing
+ignoredBuiltDependencies:
+  - sharp # not used (image optimization) — skip native build
+  - unrs-resolver # transitive; native build not needed here
+allowBuilds:
+  "@prisma/engines": true
+  bcrypt: true
+  prisma: true
+  sharp: false
+  unrs-resolver: false

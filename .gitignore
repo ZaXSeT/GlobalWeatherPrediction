@@ -1,0 +1,57 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files: ignore all real env files (they hold secrets)…
+.env*
+# …but DO commit the template so collaborators know which vars to set (CLAUDE.md §3).
+!.env.example
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# Local agent orchestration / build scaffolding — not part of the app itself and
+# not the graded deliverable, so kept out of the repo. NOTE: docs/ (PRD,
+# ARCHITECTURE, SECURITY.md) and README.md ARE tracked — they are the graded
+# evidence trail (CLAUDE.md §5) and must be committed.
+CLAUDE.md
+KICKOFF-PROMPT.md
+.agents/
+
+/src/generated/prisma
+
+# Finished reference implementation, kept locally while the app is rebuilt
+# step by step for a clean commit history. Not committed.
+/_reference/
