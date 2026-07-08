@@ -1,0 +1,69 @@
+// Prisma schema — Global Weather Prediction
+// Data model for auth (User) and user-owned data (Favorite, SearchHistory).
+// Connection URL is NOT declared here in Prisma 7 — it is supplied by
+// prisma.config.ts (CLI/migrations) and by the driver adapter in src/lib/db.ts
+// (runtime). See docs/PRD.md §12 and docs/ARCHITECTURE.md §12.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// A registered account.
+model User {
+  id String @id @default(cuid())
+
+  // Login identity. Stored lowercased at the app layer and marked @unique so the
+  // DB enforces one account per email (blocks duplicate-account registration).
+  // (We avoid the citext extension for portability; case-folding is done in code.)
+  email String @unique
+
+  // SR-4: only ever the bcrypt HASH is stored here — never the plaintext password.
+  // The hashing itself lives in src/lib/auth/password.ts (Phase 5).
+  passwordHash String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations. onDelete: Cascade (declared on the child side) means deleting a
+  // user removes their owned rows — no orphaned favorites/history.
+  favorites Favorite[]
+  history   SearchHistory[]
+}
+
+// A location a user saved. Every row is owned by exactly one user (userId),
+// which is the anchor for the SR-13 ownership checks in the API layer.
+model Favorite {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  city      String
+  latitude  Float
+  longitude Float
+  createdAt DateTime @default(now())
+
+  // One saved copy of a place per user; prevents duplicate favorites.
+  @@unique([userId, latitude, longitude])
+  // Index the ownership column: every read is scoped `WHERE userId = <me>`.
+  @@index([userId])
+}
+
+// A record of a search the user performed (for the "recent history" view).
+model SearchHistory {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  city      String
+  latitude  Float?
+  longitude Float?
+  createdAt DateTime @default(now())
+
+  // Ordered, per-user history lookups: `WHERE userId = <me> ORDER BY createdAt DESC`.
+  @@index([userId, createdAt])
+}
