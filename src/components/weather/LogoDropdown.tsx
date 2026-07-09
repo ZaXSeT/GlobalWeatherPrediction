@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { CloudSun, ChevronDown, MapPin, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { apiGet } from "@/lib/client/api";
+import { fetchWeatherOnce } from "@/lib/client/weather-cache";
 import type { WeatherResult } from "@/lib/weather/types";
 
 const CITIES = ["New York", "London", "Tokyo", "Paris", "Sydney"];
@@ -12,8 +12,12 @@ const CITIES = ["New York", "London", "Tokyo", "Paris", "Sydney"];
 export function LogoDropdown() {
   const [open, setOpen] = useState(false);
   const [weatherData, setWeatherData] = useState<Record<string, WeatherResult | null>>({});
-  const [loading, setLoading] = useState(false);
+  const requested = useRef(false);
   const ref = useRef<HTMLDivElement>(null);
+
+  // Derived rather than stored: the panel is loading while it is open and nothing has landed
+  // yet. Deriving it keeps setState out of the effect body below.
+  const loading = open && Object.keys(weatherData).length === 0;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -26,23 +30,28 @@ export function LogoDropdown() {
   }, []);
 
   useEffect(() => {
-    if (open && Object.keys(weatherData).length === 0) {
-      setLoading(true);
-      Promise.all(
-        CITIES.map((city) =>
-          apiGet<WeatherResult>(`/api/weather?city=${encodeURIComponent(city)}`)
-            .then((res) => ({ city, data: res.ok ? res.data : null }))
-        )
-      ).then((results) => {
-        const newData: Record<string, WeatherResult | null> = {};
-        results.forEach((r) => {
-          newData[r.city] = r.data;
-        });
-        setWeatherData(newData);
-        setLoading(false);
-      });
-    }
-  }, [open, weatherData]);
+    if (!open || requested.current) return;
+    requested.current = true;
+
+    let active = true;
+    void (async () => {
+      const results = await Promise.all(
+        CITIES.map(async (city) => ({
+          city,
+          data: await fetchWeatherOnce(`city=${encodeURIComponent(city)}`),
+        })),
+      );
+      if (!active) return;
+
+      const next: Record<string, WeatherResult | null> = {};
+      for (const result of results) next[result.city] = result.data;
+      setWeatherData(next);
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [open]);
 
   return (
     <div className="relative z-[99]" ref={ref}>

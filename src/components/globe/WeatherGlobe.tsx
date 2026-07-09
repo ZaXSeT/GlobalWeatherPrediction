@@ -3,8 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import createGlobe, { type Globe } from "cobe";
 import { Cloud, CloudRain, Sun, Loader2 } from "lucide-react";
-import { apiGet } from "@/lib/client/api";
-import type { WeatherResult } from "@/lib/weather/types";
+import { fetchWeatherOnce } from "@/lib/client/weather-cache";
 
 interface City {
   id: string;
@@ -82,6 +81,9 @@ export default function WeatherGlobe() {
   const popupRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const [weather, setWeather] = useState<Record<string, CityWeather>>({});
+  // Separates "still fetching" from "fetch finished and this city has no reading". Without
+  // it a failed request leaves the spinner turning forever instead of admitting defeat.
+  const [loaded, setLoaded] = useState(false);
 
   const phi = useRef(0);
   const theta = useRef(0.25);
@@ -101,17 +103,16 @@ export default function WeatherGlobe() {
     void (async () => {
       const results = await Promise.all(
         CITIES.map(async (city) => {
-          const res = await apiGet<WeatherResult | { error: string }>(
-            `/api/weather?lat=${city.lat}&lon=${city.lon}`,
-          );
-          if (!res.ok || !res.data || "error" in res.data) return null;
-          const { tempC, condition } = res.data.current;
+          const data = await fetchWeatherOnce(`lat=${city.lat}&lon=${city.lon}`);
+          if (!data) return null;
+          const { tempC, condition } = data.current;
           return [city.id, { tempC, condition }] as const;
         }),
       );
 
       if (!active) return;
       setWeather(Object.fromEntries(results.filter((r) => r !== null)));
+      setLoaded(true);
     })();
 
     return () => {
@@ -262,6 +263,8 @@ export default function WeatherGlobe() {
                 <span className="text-sm font-semibold tabular-nums text-foreground">
                   {Math.round(reading.tempC)}°
                 </span>
+              ) : loaded ? (
+                <span className="text-xs text-muted-foreground">n/a</span>
               ) : (
                 <Loader2 className="size-3 animate-spin text-muted-foreground" />
               )}

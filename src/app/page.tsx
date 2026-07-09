@@ -2,7 +2,6 @@ import Link from "next/link";
 import { CloudSun } from "lucide-react";
 import { LazyGlobe } from "@/components/LazyGlobe";
 import { DemoSearch } from "@/components/weather/DemoSearch";
-import { LogoDropdown } from "@/components/weather/LogoDropdown";
 import { Reveal } from "@/components/motion/Reveal";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,7 +14,11 @@ export default function LandingPage() {
       {/* Premium Apple-style Glass Navbar */}
       <header className="fixed inset-x-0 top-0 z-50 flex w-full border-b border-black/5 bg-white/70 backdrop-blur-md">
         <div className="flex w-full items-center justify-between px-6 py-4 md:px-12 lg:px-24">
-          <LogoDropdown />
+          <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold transition-opacity hover:opacity-80">
+            <CloudSun className="size-6 text-foreground" />
+            <span className="hidden sm:inline tracking-tight">Global Weather Prediction</span>
+            <span className="sm:hidden tracking-tight">Global Weather</span>
+          </Link>
           <nav className="flex shrink-0 items-center gap-2 text-sm">
             <Button asChild variant="ghost" size="sm" className="rounded-full">
               <Link href="/login">Log in</Link>

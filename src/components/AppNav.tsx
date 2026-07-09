@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 import { apiMutate } from "@/lib/client/api";
-import { LogoDropdown } from "@/components/weather/LogoDropdown";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -31,9 +30,9 @@ export function AppNav() {
     // breakpoint up it collapses to a single row. The link strip scrolls within itself
     // instead of widening the page, which is what forced a sideways page scroll at 375px.
     <nav className="flex flex-wrap items-center gap-y-2 border-b border-border px-4 py-3">
-      <div className="mr-4 sm:order-1 pt-1">
-        <LogoDropdown />
-      </div>
+      <Link href="/dashboard" className="mr-4 font-heading font-semibold sm:order-1">
+        🌤 Weather
+      </Link>
 
       <Button onClick={logout} variant="ghost" size="sm" className="ml-auto sm:order-3">
         <LogOut aria-hidden />
