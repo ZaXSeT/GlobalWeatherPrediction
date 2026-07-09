@@ -1,18 +1,16 @@
 import { SignJWT, jwtVerify } from "jose";
 import { env } from "@/lib/env";
 
-// SECURITY - Session token integrity (signed JWT via jose) [SR-5]
-// Risk: A forged or tampered session token would let an attacker impersonate any
-//       user; a token that never expires would remain usable forever if stolen.
-// How:  Tokens are signed with HS256 over the >=32-char server secret and carry a
-//       short (1h) expiry. Verification PINS the algorithm to HS256 - rejecting
-//       "alg: none" and RS/HS algorithm-confusion attacks - and rejects expired or
-//       otherwise invalid tokens.
-// Why:  The signature proves the token was issued by us and is untampered; the
-//       short expiry bounds the damage window of a leaked token. jose is used
-//       (not jsonwebtoken) because it runs in BOTH the Node route handlers and the
-//       Edge middleware gate while remaining fully hand-rolled - no auth framework.
-//       (Deviation from CLAUDE.md §2's literal `jsonwebtoken`, ratified in ADR-001.)
+// SECURITY - Integritas Token Sesi (JWT dengan Jose) [SR-5]
+// Risk (Risiko): Jika token sesi bisa dipalsukan, peretas bisa login sebagai siapa saja. 
+//                Jika token tidak memiliki masa kedaluwarsa, token curian bisa dipakai selamanya.
+// How (Cara):    Token ditandatangani menggunakan algoritma HS256 dengan secret key yang panjang,
+//                serta memiliki masa aktif (expiry) singkat yaitu 1 jam. Saat verifikasi, 
+//                kita SECARA EKSPLISIT mengunci algoritma (pinning) ke 'HS256' agar menolak
+//                token palsu dengan "alg: none" (Algorithm-Confusion attacks).
+// Why (Alasan):  Tanda tangan digital membuktikan bahwa token dikeluarkan oleh server kita 
+//                dan isinya belum diubah oleh klien. Pengecekan algoritma yang ketat 
+//                mencegah celah manipulasi header JWT.
 
 const secret = new TextEncoder().encode(env.JWT_SECRET);
 const ALG = "HS256";

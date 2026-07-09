@@ -1,17 +1,18 @@
 import { z } from "zod";
 
-// SECURITY - Input validation at the auth trust boundary [SR-1]
-// Risk: Unvalidated request bodies let malformed, oversized, or wrong-type data
-//       reach password hashing, the database, and cookies - enabling abuse and
-//       injection attempts.
-// How:  Zod schemas parse every auth request body; anything not matching (bad
-//       email, too-short or oversized password) is rejected with a generic 400
-//       before the value is used. The 72-byte password cap matches bcrypt's input
-//       limit so passwords are never silently truncated.
-// Why:  Rejecting bad input at the boundary is the first, cheapest line of defense
-//       and a precondition for every downstream control.
+// SECURITY - Validasi Input di Batas Kepercayaan Autentikasi [SR-1]
+// Risk (Risiko): Membiarkan request tanpa validasi masuk ke sistem akan membuat data cacat, 
+//                terlalu besar, atau salah tipe membebani proses hashing, database, dan cookie - 
+//                yang berpotensi membuka celah abuse dan injeksi.
+// How (Cara):    Skema Zod (Zod schemas) memeriksa setiap isi (body) dari request autentikasi. 
+//                Apapun yang tidak sesuai (email salah, password kependekan/terlalu panjang) 
+//                akan langsung ditolak dengan status 400 sebelum nilai tersebut diproses. 
+//                Batas maksimal password (72 byte) disamakan dengan batas input bcrypt 
+//                agar password tidak pernah terpotong secara diam-diam.
+// Why (Alasan):  Menolak input buruk di pintu depan adalah garis pertahanan pertama 
+//                dan termurah untuk mencegah masalah di proses-proses selanjutnya.
 
-// bcrypt only considers the first 72 bytes of input; cap here to make that explicit.
+// bcrypt hanya memproses 72 byte pertama dari input; kita beri batasan eksplisit di sini.
 const PASSWORD_MAX = 72;
 
 export const registerSchema = z.object({

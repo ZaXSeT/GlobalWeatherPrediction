@@ -23,17 +23,25 @@ export function Reveal({
 
   const hidden = { opacity: 0, y: 16 };
   const shown = { opacity: 1, y: 0 };
+  const tx = { duration: 0.5, delay, ease: "easeOut" as const };
+
+  if (immediate) {
+    return (
+      <motion.div className={className} initial={hidden} animate={{ ...shown, transition: tx }}>
+        {children}
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
       className={className}
       initial={hidden}
-      {...(immediate
-        ? { animate: shown }
-        : { whileInView: shown, viewport: { once: true, margin: "-80px" } })}
-      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      whileInView={{ ...shown, transition: tx }}
+      viewport={{ once: true, margin: "-80px" }}
     >
       {children}
     </motion.div>
   );
 }
+

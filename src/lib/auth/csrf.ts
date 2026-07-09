@@ -2,18 +2,18 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import type { NextResponse } from "next/server";
 
-// SECURITY - CSRF protection (double-submit cookie token) [SR-12]
-// Risk: Because the session lives in a cookie the browser sends automatically, a
-//       malicious third-party site could trigger authenticated, state-changing
-//       requests on the user's behalf (Cross-Site Request Forgery).
-// How:  A random token is stored in a NON-httpOnly `csrf` cookie AND must be echoed
-//       by the client in the X-CSRF-Token header on every mutation. The server
-//       compares the two in constant time. A cross-site attacker can cause the
-//       cookie to be auto-sent, but the Same-Origin Policy stops them from READING
-//       it to set the matching header - so the comparison fails and the request is
-//       rejected.
-// Why:  This ties every mutation to a value only same-origin script can read,
-//       defeating forged requests without keeping server-side session state.
+// SECURITY - CSRF Double-Submit Token [SR-12]
+// Risk (Risiko): Browser mengirimkan cookie (termasuk session token) secara otomatis
+//                pada setiap request ke origin kita. Website peretas bisa membuat 
+//                POST request tersembunyi ke API kita dan browser akan melampirkan 
+//                sesi login user secara otomatis (Cross-Site Request Forgery).
+// How (Cara):    Server menaruh token CSRF acak di dalam cookie. Client membaca 
+//                cookie tersebut lalu mengirimkannya kembali di dalam header 
+//                `x-csrf-token`. Server akan menolak aksi (POST/DELETE) jika isi 
+//                header dan cookie tidak persis sama.
+// Why (Alasan):  Website peretas tidak bisa membaca cookie kita karena terhalang 
+//                oleh Same-Origin Policy dari browser, sehingga mereka tidak bisa 
+//                menyalin isi cookie tersebut ke dalam header yang diwajibkan.
 
 export const CSRF_COOKIE = "csrf";
 export const CSRF_HEADER = "x-csrf-token";

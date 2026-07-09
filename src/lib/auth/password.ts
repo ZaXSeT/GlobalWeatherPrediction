@@ -1,15 +1,14 @@
 import bcrypt from "bcrypt";
 
-// SECURITY - Password hashing (bcrypt) [SR-4]
-// Risk: If the user table is ever exposed, plaintext or weakly-hashed passwords
-//       would hand an attacker every account - and, via password reuse, accounts
-//       on other services too.
-// How:  Passwords are hashed with bcrypt at cost factor 12. bcrypt generates a
-//       per-hash random salt (stored inside the hash string) and is deliberately
-//       slow. We persist only the hash; verification uses bcrypt.compare.
-// Why:  A slow, salted hash makes offline brute-force and precomputed
-//       (rainbow-table) attacks impractical even if the database leaks. Cost 12 is
-//       a common balance between attacker cost and login latency.
+// SECURITY - Hashing Password (bcrypt) [SR-4]
+// Risk (Risiko): Jika tabel user di database sewaktu-waktu bocor/terekspos, password 
+//                dalam bentuk teks asli (plaintext) akan membuat hacker bisa menguasai 
+//                semua akun, bahkan akun di layanan lain (jika user memakai password yang sama).
+// How (Cara):    Password di-hash menggunakan algoritma `bcrypt` dengan tingkat kesulitan (cost) 12. 
+//                Bcrypt membuat 'garam' (salt) acak untuk setiap hash dan sengaja dibuat lambat. 
+//                Kita HANYA menyimpan hasil hash-nya saja di database.
+// Why (Alasan):  Algoritma hash yang lambat dan memiliki salt membuat serangan tebak-paksa 
+//                (brute-force) dan rainbow-table menjadi tidak praktis, meskipun database kita bocor.
 
 const SALT_ROUNDS = 12;
 
@@ -21,15 +20,14 @@ export async function hashPassword(plain: string): Promise<string> {
 // account does not exist (see verifyPasswordConstantTime). Computed once at import.
 const DUMMY_HASH = bcrypt.hashSync("password-that-cannot-be-entered\x00", SALT_ROUNDS);
 
-// SECURITY - Login timing equalization / anti-enumeration [SR-15 · supports SR-4]
-// Risk: If we skipped the bcrypt comparison when the email is unknown, "no such
-//       user" would respond measurably faster than "wrong password", letting an
-//       attacker enumerate which emails are registered.
-// How:  This always runs one bcrypt.compare - against the real hash when the user
-//       exists, or against DUMMY_HASH when it does not - then returns false unless
-//       the user existed AND the password matched.
-// Why:  Constant-ish response time removes the account-existence timing oracle
-//       from the login endpoint.
+// SECURITY - Penyetaraan Waktu Login / Anti-Enumeration [SR-15]
+// Risk (Risiko): Jika kita tidak melakukan verifikasi bcrypt ketika email tidak ditemukan, 
+//                respon "user tidak ditemukan" akan jauh lebih cepat dibanding "password salah", 
+//                sehingga hacker bisa menebak email siapa saja yang terdaftar di aplikasi ini.
+// How (Cara):    Fungsi ini akan SELALU menjalankan satu proses `bcrypt.compare` - 
+//                melawan hash asli jika user ada, atau melawan DUMMY_HASH jika user tidak ada.
+// Why (Alasan):  Waktu respon server yang selalu sama (konstan) menghilangkan celah 
+//                bocoran informasi (timing oracle), mencegah attacker mencari tahu email terdaftar.
 export async function verifyPasswordConstantTime(
   plain: string,
   hash: string | null,
