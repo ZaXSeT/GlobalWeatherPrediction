@@ -4,7 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiMutate } from "@/lib/client/api";
-import { CloudSun, ArrowRight } from "lucide-react";
+import { LogoDropdown } from "@/components/weather/LogoDropdown";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -35,10 +36,9 @@ export default function LoginPage() {
     <main className="flex min-h-screen w-full items-center justify-center p-6 bg-[#f5f5f7]">
       <Card className="w-full max-w-md rounded-[2rem] border-black/5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         <CardHeader className="flex flex-col items-center gap-2 pb-2 pt-10">
-          <Link href="/" className="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity">
-            <CloudSun className="h-8 w-8 text-foreground" />
-            <span className="font-semibold tracking-tight text-xl">GlobalWeather</span>
-          </Link>
+          <div className="mb-2">
+            <LogoDropdown />
+          </div>
           <CardTitle className="text-2xl font-semibold tracking-tight">Log in</CardTitle>
           <CardDescription className="text-center text-muted-foreground">
             Welcome back to GlobalWeather

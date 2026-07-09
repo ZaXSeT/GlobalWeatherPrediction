@@ -35,6 +35,12 @@ yarn-error.log*
 # …but DO commit the template so collaborators know which vars to set (CLAUDE.md §3).
 !.env.example
 
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # vercel
 .vercel
 
