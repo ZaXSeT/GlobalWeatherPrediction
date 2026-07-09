@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiMutate } from "@/lib/client/api";
-import { CloudSun, ArrowRight } from "lucide-react";
+import { CloudSun, ArrowRight, ChevronLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -33,7 +33,12 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="flex min-h-screen w-full items-center justify-center p-6 bg-[#f5f5f7]">
+    <main className="flex min-h-screen w-full items-center justify-center p-6 bg-[#f5f5f7] relative">
+      <Link href="/" className="absolute top-8 left-8 flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+        <ChevronLeft className="size-4" />
+        Back
+      </Link>
+      
       <Card className="w-full max-w-md rounded-[2rem] border-black/5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <CardHeader className="flex flex-col items-center gap-2 pb-2 pt-10">
           <Link href="/" className="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity">
