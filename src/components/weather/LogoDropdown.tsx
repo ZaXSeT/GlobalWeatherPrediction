@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { CloudSun, ChevronDown, MapPin, Loader2 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
-import { apiQuery } from "@/lib/client/api";
+import { apiGet } from "@/lib/client/api";
 import type { WeatherResult } from "@/lib/weather/types";
 
 const CITIES = ["New York", "London", "Tokyo", "Paris", "Sydney"];
@@ -30,7 +30,7 @@ export function LogoDropdown() {
       setLoading(true);
       Promise.all(
         CITIES.map((city) =>
-          apiQuery<WeatherResult>(`/api/weather?city=${encodeURIComponent(city)}`)
+          apiGet<WeatherResult>(`/api/weather?city=${encodeURIComponent(city)}`)
             .then((res) => ({ city, data: res.ok ? res.data : null }))
         )
       ).then((results) => {
