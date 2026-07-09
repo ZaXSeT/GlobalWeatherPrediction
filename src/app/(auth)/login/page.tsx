@@ -34,7 +34,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen w-full items-center justify-center p-6 bg-[#f5f5f7]">
-      <Card className="w-full max-w-md rounded-[2rem] border-black/5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+      <Card className="w-full max-w-md rounded-[2rem] border-black/5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
         <CardHeader className="flex flex-col items-center gap-2 pb-2 pt-10">
           <div className="mb-2">
             <LogoDropdown />

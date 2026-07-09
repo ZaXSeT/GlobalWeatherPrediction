@@ -49,10 +49,10 @@ export function LogoDropdown() {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="flex min-w-0 items-center gap-2 font-semibold transition-opacity hover:opacity-80 outline-none"
+        className="flex min-w-0 items-center gap-1.5 font-semibold transition-opacity hover:opacity-80 outline-none"
       >
         <CloudSun className="size-6 text-foreground" />
-        <span className="hidden sm:inline tracking-tight text-xl">Global Weather</span>
+        <span className="tracking-tight text-xl">Global Weather</span>
         <ChevronDown className={`size-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
 
