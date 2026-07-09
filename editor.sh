@@ -1,0 +1,1 @@
+sed -i -e 's/^pick 3389be2/edit 3389be2/' -e 's/^pick a31fc47/edit a31fc47/' -e 's/^pick b1c6737/edit b1c6737/' -e 's/^pick c2e61ec/edit c2e61ec/' -e 's/^pick a1b25e5/edit a1b25e5/' -e 's/^pick 9030b18/edit 9030b18/' "$1"
