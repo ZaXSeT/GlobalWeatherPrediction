@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import createGlobe, { type Globe } from "cobe";
-import { Cloud, CloudRain, Sun } from "lucide-react";
+import { Cloud, CloudRain, Sun, Loader2 } from "lucide-react";
 import { apiGet } from "@/lib/client/api";
 import type { WeatherResult } from "@/lib/weather/types";
 
@@ -59,7 +59,8 @@ function project(v: Vec3, phi: number, theta: number) {
   const s = sinPhi * sinTheta * v[0] + cosTheta * v[1] - cosPhi * sinTheta * v[2];
   const z = -sinPhi * cosTheta * v[0] + sinTheta * v[1] + cosPhi * cosTheta * v[2];
 
-  return { x: (c + 1) / 2, y: (-s + 1) / 2, z };
+  const scale = 0.8;
+  return { x: (c * scale + 1) / 2, y: (-s * scale + 1) / 2, z };
 }
 
 function conditionIcon(condition: string) {
@@ -173,10 +174,7 @@ export default function WeatherGlobe() {
         markerColor: [0.055, 0.647, 0.914],
         glowColor: [0.87, 0.9, 0.94],
         markerElevation: 0,
-        markers: CITIES.map((city) => ({
-          location: [city.lat, city.lon] as [number, number],
-          size: 0.05,
-        })),
+        markers: [], // We use HTML markers instead for perfect alignment and clickability
       });
 
       canvas!.style.opacity = "1";
@@ -239,22 +237,35 @@ export default function WeatherGlobe() {
               popupRefs.current[city.id] = el;
             }}
             style={{ opacity: 0 }}
-            className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-[calc(100%+12px)] whitespace-nowrap rounded-lg border border-border bg-card/95 px-2.5 py-1.5 shadow-sm backdrop-blur-sm transition-opacity duration-300"
+            className="absolute z-10 -translate-x-1/2 -translate-y-1/2 flex items-center gap-3 transition-opacity duration-300 hover:z-20 group"
           >
-            <div className="flex items-center gap-2">
-              <Icon aria-hidden className="size-3.5 text-primary" />
-              <span className="text-xs font-medium">{city.label}</span>
-              {reading && (
-                <span className="text-xs font-semibold tabular-nums">
-                  {Math.round(reading.tempC)}°C
+            {/* The Blue Dot Marker */}
+            <button 
+              type="button"
+              className="size-3.5 rounded-full bg-sky-500 shadow-[0_0_12px_rgba(14,165,233,0.9)] pointer-events-auto cursor-pointer hover:scale-125 transition-transform" 
+              aria-label={`View weather for ${city.label}`}
+              onClick={() => {
+                // Click interaction for the marker
+                const el = popupRefs.current[city.id];
+                if (el) {
+                  el.classList.toggle('scale-110');
+                  setTimeout(() => el.classList.remove('scale-110'), 200);
+                }
+              }}
+            />
+            
+            {/* The Floating Label */}
+            <div className="pointer-events-auto cursor-pointer flex items-center gap-2 whitespace-nowrap rounded-xl border border-black/5 bg-white/95 px-3 py-2 shadow-[0_4px_20px_rgb(0,0,0,0.08)] backdrop-blur-md transition-all group-hover:scale-105">
+              <Icon aria-hidden className="size-4 text-sky-600" />
+              <span className="text-sm font-medium text-foreground">{city.label}</span>
+              {reading ? (
+                <span className="text-sm font-semibold tabular-nums text-foreground">
+                  {Math.round(reading.tempC)}°
                 </span>
+              ) : (
+                <Loader2 className="size-3 animate-spin text-muted-foreground" />
               )}
             </div>
-            {reading && (
-              <p className="mt-0.5 text-[10px] leading-none text-muted-foreground">
-                {reading.condition}
-              </p>
-            )}
           </div>
         );
       })}
