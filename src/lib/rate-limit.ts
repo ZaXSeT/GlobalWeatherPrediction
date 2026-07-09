@@ -2,7 +2,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { env } from "@/lib/env";
 
-// SECURITY — Rate limiting [SR-9]
+// SECURITY - Rate limiting [SR-9]
 // Risk: Without throttling, an attacker can brute-force logins / stuff credentials,
 //       and hammer the weather proxy to exhaust our third-party quota (a cheap DoS).
 // How:  Each caller (keyed by client IP, or user id once authenticated) gets a bounded
@@ -41,7 +41,7 @@ function upstashLimiter(limit: number, windowSeconds: number): Ratelimit {
 }
 
 // --- In-memory (fallback) path -------------------------------------------------
-// Fixed-window counter per key. TRADEOFF: per-instance only — will not enforce a
+// Fixed-window counter per key. TRADEOFF: per-instance only - will not enforce a
 // shared limit across multiple serverless instances (documented, CLAUDE.md §2).
 const buckets = new Map<string, { count: number; resetAt: number }>();
 function memoryLimit(key: string, limit: number, windowSeconds: number): RateLimitResult {

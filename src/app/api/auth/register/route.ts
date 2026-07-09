@@ -49,7 +49,7 @@ export async function POST(req: Request) {
     return jsonError("An account with that email already exists.", 409);
   }
 
-  // SR-4: persist only the bcrypt hash — never the plaintext password.
+  // SR-4: persist only the bcrypt hash - never the plaintext password.
   const passwordHash = await hashPassword(password);
   await prisma.user.create({ data: { email, passwordHash } });
 

@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import type { NextResponse } from "next/server";
 
-// SECURITY — CSRF protection (double-submit cookie token) [SR-12]
+// SECURITY - CSRF protection (double-submit cookie token) [SR-12]
 // Risk: Because the session lives in a cookie the browser sends automatically, a
 //       malicious third-party site could trigger authenticated, state-changing
 //       requests on the user's behalf (Cross-Site Request Forgery).
@@ -10,7 +10,7 @@ import type { NextResponse } from "next/server";
 //       by the client in the X-CSRF-Token header on every mutation. The server
 //       compares the two in constant time. A cross-site attacker can cause the
 //       cookie to be auto-sent, but the Same-Origin Policy stops them from READING
-//       it to set the matching header — so the comparison fails and the request is
+//       it to set the matching header - so the comparison fails and the request is
 //       rejected.
 // Why:  This ties every mutation to a value only same-origin script can read,
 //       defeating forged requests without keeping server-side session state.

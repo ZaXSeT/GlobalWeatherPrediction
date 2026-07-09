@@ -1,8 +1,8 @@
 import { z } from "zod";
 
-// SECURITY — Environment validation & secret handling [SR-8]
-// Risk: Missing or malformed configuration — an absent DATABASE_URL, a weak/short
-//       JWT secret, or a secret accidentally shipped under a NEXT_PUBLIC_ name —
+// SECURITY - Environment validation & secret handling [SR-8]
+// Risk: Missing or malformed configuration - an absent DATABASE_URL, a weak/short
+//       JWT secret, or a secret accidentally shipped under a NEXT_PUBLIC_ name -
 //       can make the app boot in an insecure state or leak secrets into the
 //       browser bundle.
 // How:  Every server-side env var is parsed once, at import, through this Zod
@@ -23,7 +23,7 @@ const serverSchema = z.object({
   // Session signing secret (SR-5). 32 chars ≈ 256 bits of key material for HS256.
   JWT_SECRET: z.string().min(32, "JWT_SECRET must be at least 32 characters"),
 
-  // Public site URL — safe to expose; used for absolute URLs / CORS allowlist (SR-11).
+  // Public site URL - safe to expose; used for absolute URLs / CORS allowlist (SR-11).
   NEXT_PUBLIC_APP_URL: z.string().url().optional(),
 
   // Weather provider key (SR-7). Required: it is read server-side only and must
@@ -38,12 +38,12 @@ const serverSchema = z.object({
 const parsed = serverSchema.safeParse(process.env);
 
 if (!parsed.success) {
-  // Surface WHICH vars are wrong (names only — never values, to avoid logging secrets).
+  // Surface WHICH vars are wrong (names only - never values, to avoid logging secrets).
   const problems = parsed.error.issues
     .map((issue) => `  - ${issue.path.join(".") || "(root)"}: ${issue.message}`)
     .join("\n");
   console.error(`Invalid environment configuration:\n${problems}`);
-  throw new Error("Invalid environment configuration — see .env.example.");
+  throw new Error("Invalid environment configuration - see .env.example.");
 }
 
 export const env = parsed.data;

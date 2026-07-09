@@ -1,6 +1,6 @@
-// Prisma schema — Global Weather Prediction
+// Prisma schema - Global Weather Prediction
 // Data model for auth (User) and user-owned data (Favorite, SearchHistory).
-// Connection URL is NOT declared here in Prisma 7 — it is supplied by
+// Connection URL is NOT declared here in Prisma 7 - it is supplied by
 // prisma.config.ts (CLI/migrations) and by the driver adapter in src/lib/db.ts
 // (runtime). See docs/PRD.md §12 and docs/ARCHITECTURE.md §12.
 
@@ -22,7 +22,7 @@ model User {
   // (We avoid the citext extension for portability; case-folding is done in code.)
   email String @unique
 
-  // SR-4: only ever the bcrypt HASH is stored here — never the plaintext password.
+  // SR-4: only ever the bcrypt HASH is stored here - never the plaintext password.
   // The hashing itself lives in src/lib/auth/password.ts (Phase 5).
   passwordHash String
 
@@ -30,7 +30,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   // Relations. onDelete: Cascade (declared on the child side) means deleting a
-  // user removes their owned rows — no orphaned favorites/history.
+  // user removes their owned rows - no orphaned favorites/history.
   favorites Favorite[]
   history   SearchHistory[]
 }

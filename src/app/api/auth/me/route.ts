@@ -8,7 +8,7 @@ import { signSession, verifySession } from "@/lib/auth/jwt";
 import { ensureCsrfCookie } from "@/lib/auth/csrf";
 import { jsonOk } from "@/lib/http";
 
-// GET /api/auth/me — returns the current user (or null) and doubles as the CSRF
+// GET /api/auth/me - returns the current user (or null) and doubles as the CSRF
 // bootstrap: it guarantees an anonymous client has a CSRF cookie so it can then
 // submit /login or /register.
 export async function GET() {

@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import type { NextResponse } from "next/server";
 import { SESSION_TTL_SECONDS } from "@/lib/auth/jwt";
 
-// SECURITY — Secure session cookie [SR-6]
+// SECURITY - Secure session cookie [SR-6]
 // Risk: A session token kept in a JS-readable store (localStorage or a
 //       non-httpOnly cookie) can be stolen by any XSS; sent over plain HTTP it can
 //       be sniffed; auto-sent cross-site it enables CSRF.

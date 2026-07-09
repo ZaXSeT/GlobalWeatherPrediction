@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-// SECURITY — Generic client-facing error responses [SR-15]
+// SECURITY - Generic client-facing error responses [SR-15]
 // Risk: Detailed errors or stack traces leak implementation details (DB schema,
 //       library versions, whether an account exists) that help an attacker map
 //       and target the system.

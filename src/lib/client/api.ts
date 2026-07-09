@@ -1,10 +1,10 @@
-// SECURITY — CSRF token propagation from the browser [SR-12, client half]
+// SECURITY - CSRF token propagation from the browser [SR-12, client half]
 // Risk: State-changing requests must carry the CSRF token, or the server (correctly)
 //       rejects them; getting this wrong client-side breaks every mutation.
 // How:  We read the readable `csrf` cookie and echo it in the X-CSRF-Token header on
 //       every mutating request. If the cookie is missing we first call GET
 //       /api/auth/me, which sets it (the bootstrap). All requests use same-origin
-//       credentials so the httpOnly session cookie is sent automatically — and note
+//       credentials so the httpOnly session cookie is sent automatically - and note
 //       we NEVER read the session cookie from JS (it's httpOnly, SR-6).
 // Why:  This is the browser half of the double-submit CSRF defense whose server half
 //       lives in src/lib/auth/csrf.ts.

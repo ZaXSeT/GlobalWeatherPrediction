@@ -1,8 +1,8 @@
 import bcrypt from "bcrypt";
 
-// SECURITY — Password hashing (bcrypt) [SR-4]
+// SECURITY - Password hashing (bcrypt) [SR-4]
 // Risk: If the user table is ever exposed, plaintext or weakly-hashed passwords
-//       would hand an attacker every account — and, via password reuse, accounts
+//       would hand an attacker every account - and, via password reuse, accounts
 //       on other services too.
 // How:  Passwords are hashed with bcrypt at cost factor 12. bcrypt generates a
 //       per-hash random salt (stored inside the hash string) and is deliberately
@@ -21,12 +21,12 @@ export async function hashPassword(plain: string): Promise<string> {
 // account does not exist (see verifyPasswordConstantTime). Computed once at import.
 const DUMMY_HASH = bcrypt.hashSync("password-that-cannot-be-entered\x00", SALT_ROUNDS);
 
-// SECURITY — Login timing equalization / anti-enumeration [SR-15 · supports SR-4]
+// SECURITY - Login timing equalization / anti-enumeration [SR-15 · supports SR-4]
 // Risk: If we skipped the bcrypt comparison when the email is unknown, "no such
 //       user" would respond measurably faster than "wrong password", letting an
 //       attacker enumerate which emails are registered.
-// How:  This always runs one bcrypt.compare — against the real hash when the user
-//       exists, or against DUMMY_HASH when it does not — then returns false unless
+// How:  This always runs one bcrypt.compare - against the real hash when the user
+//       exists, or against DUMMY_HASH when it does not - then returns false unless
 //       the user existed AND the password matched.
 // Why:  Constant-ish response time removes the account-existence timing oracle
 //       from the login endpoint.

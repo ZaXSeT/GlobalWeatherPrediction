@@ -14,8 +14,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Global Weather Prediction",
-  description: "Secure weather dashboard — current conditions, forecast, and air quality.",
+  description: "Secure weather dashboard - current conditions, forecast, and air quality.",
 };
+
+// The nonce-based CSP (middleware.ts) requires per-request rendering so Next can stamp the
+// fresh nonce onto its inline scripts. Force dynamic rendering app-wide so no page is served
+// as pre-baked HTML carrying un-nonced scripts, which the CSP would then block.
+export const dynamic = "force-dynamic";
 
 export default function RootLayout({
   children,

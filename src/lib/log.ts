@@ -1,5 +1,5 @@
-// SECURITY — Safe structured logging with redaction [SR-14]
-// Risk: Logs are a classic secret-leak channel — accidentally logging a password,
+// SECURITY - Safe structured logging with redaction [SR-14]
+// Risk: Logs are a classic secret-leak channel - accidentally logging a password,
 //       session token, cookie, API key, or DB URL puts those secrets wherever logs
 //       are stored/shipped.
 // How:  All app logging goes through this helper, which emits a single-line JSON

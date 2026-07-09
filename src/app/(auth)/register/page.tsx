@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiMutate } from "@/lib/client/api";
+import { CloudSun, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -29,43 +33,59 @@ export default function RegisterPage() {
   }
 
   return (
-    <main className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-6 py-12">
-      <h1 className="text-2xl font-bold">Create your account</h1>
-      <form onSubmit={submit} className="flex flex-col gap-3">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          autoComplete="email"
-          className="rounded-lg border border-black/15 bg-transparent px-4 py-2 outline-none focus:border-sky-500 dark:border-white/20"
-        />
-        <input
-          type="password"
-          required
-          minLength={8}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password (min 8 characters)"
-          autoComplete="new-password"
-          className="rounded-lg border border-black/15 bg-transparent px-4 py-2 outline-none focus:border-sky-500 dark:border-white/20"
-        />
-        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
-        <button
-          type="submit"
-          disabled={loading}
-          className="rounded-lg bg-sky-600 px-4 py-2 font-medium text-white hover:bg-sky-700 disabled:opacity-50"
-        >
-          {loading ? "…" : "Sign up"}
-        </button>
-      </form>
-      <p className="text-sm opacity-75">
-        Already have an account?{" "}
-        <Link href="/login" className="text-sky-600 hover:underline dark:text-sky-400">
-          Log in
-        </Link>
-      </p>
+    <main className="flex min-h-screen w-full items-center justify-center p-6 bg-[#f5f5f7]">
+      <Card className="w-full max-w-md rounded-[2rem] border-black/5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
+        <CardHeader className="flex flex-col items-center gap-2 pb-2 pt-10">
+          <Link href="/" className="flex items-center gap-2 mb-2 hover:opacity-80 transition-opacity">
+            <CloudSun className="h-8 w-8 text-foreground" />
+            <span className="font-semibold tracking-tight text-xl">GlobalWeather</span>
+          </Link>
+          <CardTitle className="text-2xl font-semibold tracking-tight">Create your account</CardTitle>
+          <CardDescription className="text-center text-muted-foreground">
+            Join us to explore global weather data
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="p-8 sm:p-10 pt-4">
+          <form onSubmit={submit} className="flex flex-col gap-4">
+            <div className="space-y-4">
+              <Input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email address"
+                autoComplete="email"
+                className="h-12 rounded-xl bg-black/[0.03] border-transparent focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-black/20 focus-visible:border-black/20 transition-all text-base px-4"
+              />
+              <Input
+                type="password"
+                required
+                minLength={8}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password (min 8 characters)"
+                autoComplete="new-password"
+                className="h-12 rounded-xl bg-black/[0.03] border-transparent focus-visible:bg-white focus-visible:ring-1 focus-visible:ring-black/20 focus-visible:border-black/20 transition-all text-base px-4"
+              />
+            </div>
+            {error && <p className="text-sm text-red-500 font-medium px-1">{error}</p>}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="mt-2 h-12 w-full rounded-full bg-foreground text-background hover:bg-foreground/90 font-medium text-base shadow-sm transition-all"
+            >
+              {loading ? "Creating account..." : "Sign up"}
+              {!loading && <ArrowRight className="ml-2 h-4 w-4" />}
+            </Button>
+          </form>
+          <div className="mt-8 text-center text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link href="/login" className="font-medium text-foreground hover:underline transition-all">
+              Log in
+            </Link>
+          </div>
+        </CardContent>
+      </Card>
     </main>
   );
 }

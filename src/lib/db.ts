@@ -1,7 +1,7 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-// SECURITY — SQL Injection Prevention (parameterized data access) [SR-2]
+// SECURITY - SQL Injection Prevention (parameterized data access) [SR-2]
 // Risk: User-controlled values (email at login/registration, city in search,
 //       row ids in favorites/history) flow into database queries. If those
 //       values were concatenated into raw SQL, an attacker could break out of
@@ -23,7 +23,7 @@ const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   // Fail closed: never silently start with an unconfigured database. Full
   // Zod-based env validation (SR-8) centralizes this in Phase 5.
-  throw new Error("DATABASE_URL is not set — refusing to start the database client.");
+  throw new Error("DATABASE_URL is not set - refusing to start the database client.");
 }
 
 const adapter = new PrismaPg({ connectionString });
